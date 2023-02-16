@@ -1,1 +1,12 @@
 <h1>Issues</h1>
+<h2><%- viewData.issues[0].title %></h2>
+<% viewData.issues.forEach((issue) => { %>
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title"><%- issue.title %></h5>
+    <p class="card-text"><%- issue.description %></p>
+    <p class="card-text"><%- issue.state %></p>
+    <a href="#" class="btn btn-primary">Go somewhere</a>
+  </div>
+</div>
+<% }) %>

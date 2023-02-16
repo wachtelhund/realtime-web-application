@@ -8,7 +8,7 @@ export const router = express.Router()
 
 router.use('/', homeRouter)
 router.use('/issues', issuesRouter)
-router.use('webhooks', webhooksRouter)
+router.use('/webhooks', webhooksRouter)
 
 router.use('*', (req, res, next) => {
   next(createError(404, 'Page not found'))

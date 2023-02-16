@@ -2,6 +2,7 @@
  * IssuesController.
  */
 export class IssuesController {
+  #CONNECTION_STRING = `https://gitlab.lnu.se/api/v4/projects/30073/issues?private_token=${process.env.GITLAB_TOKEN}`
   /**
    * Renders the issues view.
    *
@@ -9,7 +10,26 @@ export class IssuesController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  index (req, res, next) {
-    res.render('issues/index')
+  async index (req, res, next) {
+    const data = await fetch(this.#CONNECTION_STRING)
+    if (!data.ok) {
+      req.session.flash = { type: 'danger', text: 'Could not fetch issues.' }
+      res.redirect('/home')
+    }
+    const issues = await data.json()
+    console.log(issues);
+    const viewData = {}
+    viewData.issues = issues.map((issue) => {
+      return {
+        id: issue.id,
+        title: issue.title,
+        description: issue.description,
+        state: issue.state,
+        createdAt: issue.created_at,
+        updatedAt: issue.updated_at
+      }
+    })
+    console.log(viewData.issues)
+    res.render('issues/index', { viewData })
   }
 }
