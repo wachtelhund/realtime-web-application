@@ -17,7 +17,6 @@ export class IssuesController {
       res.redirect('/home')
     }
     const issues = await data.json()
-    console.log(issues);
     const viewData = {}
     viewData.issues = issues.map((issue) => {
       return {
