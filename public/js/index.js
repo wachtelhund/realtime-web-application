@@ -1,34 +1,17 @@
 import '../socket.io/socket.io.js'
 
 const issueTemplate = document.querySelector('#issue-template')
+addListeners()
 
 if (issueTemplate) {
+  const observer = new MutationObserver((mutations) => {
+    console.log(mutations);
+    addListeners()
+  })
+  observer.observe(document.querySelector('#issues-list'), { childList: true })
   const socket = window.io()
   socket.on('issue/create', (issue) => createIssue(issue))
 }
-
-const issues = document.querySelectorAll('.issue-card')
-issues.forEach((issue) => {
-  issue.addEventListener('change', async (event) => {
-    if (event.target.checked) {
-      event.target.nextElementSibling.textContent = 'closed'
-    } else {
-      event.target.nextElementSibling.textContent = 'opened'
-    }
-    console.log(event.target.parentElement.parentElement);
-    const body = {
-      iid: event.target.parentElement.parentElement.getAttribute('data-iid'),
-      state: event.target.nextElementSibling.textContent
-    }
-    await fetch('./issues/toggle', {
-      method: 'POST',
-      body: JSON.stringify(body),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-  })
-})
 
 const createIssue = (issue) => {
   const ids = []
@@ -43,6 +26,7 @@ const createIssue = (issue) => {
 
     issueElement.querySelector('.issue-card').setAttribute('data-id', issue.id)
     issueElement.querySelector('.issue-card').setAttribute('data-iid', issue.iid)
+    issueElement.querySelector('.card-text').textContent = issue.description
     const title = issueElement.querySelector('.issue-title')
     title.textContent = issue.title
     const aTag = document.createElement('a')
@@ -89,4 +73,35 @@ const updateIssue = (issue) => {
   } else {
     state.previousElementSibling.checked = false
   }
+}
+
+function addListeners() {
+  const issues = document.querySelectorAll('.issue-card')
+  issues.forEach((issue) => {
+    issue.removeEventListener('change', toggleState)
+    console.log('removed listener');
+  })
+  issues.forEach((issue) => {
+    issue.addEventListener('change', toggleState)
+  })
+}
+
+async function toggleState (event) {
+  if (event.target.checked) {
+    event.target.nextElementSibling.textContent = 'closed'
+  } else {
+    event.target.nextElementSibling.textContent = 'opened'
+  }
+  console.log(event.target.parentElement.parentElement);
+  const body = {
+    iid: event.target.parentElement.parentElement.getAttribute('data-iid'),
+    state: event.target.nextElementSibling.textContent
+  }
+  await fetch('./issues/toggle', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
 }
