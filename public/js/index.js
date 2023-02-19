@@ -7,6 +7,29 @@ if (issueTemplate) {
   socket.on('issue/create', (issue) => createIssue(issue))
 }
 
+const issues = document.querySelectorAll('.issue-card')
+issues.forEach((issue) => {
+  issue.addEventListener('change', async (event) => {
+    if (event.target.checked) {
+      event.target.nextElementSibling.textContent = 'closed'
+    } else {
+      event.target.nextElementSibling.textContent = 'opened'
+    }
+    console.log(event.target.parentElement.parentElement);
+    const body = {
+      iid: event.target.parentElement.parentElement.getAttribute('data-iid'),
+      state: event.target.nextElementSibling.textContent
+    }
+    await fetch('./issues/toggle', {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+  })
+})
+
 const createIssue = (issue) => {
   const ids = []
   const nodeList = document.querySelector('#issues-list')
@@ -19,13 +42,24 @@ const createIssue = (issue) => {
     const issueElement = document.querySelector('#issue-template').content.cloneNode(true)
 
     issueElement.querySelector('.issue-card').setAttribute('data-id', issue.id)
-    issueElement.querySelector('.issue-title').textContent = issue.title
-    issueElement.querySelector('.issue-description').textContent = issue.description
-    issueElement.querySelector('.issue-state').textContent = issue.state
+    issueElement.querySelector('.issue-card').setAttribute('data-iid', issue.iid)
+    const title = issueElement.querySelector('.issue-title')
+    title.textContent = issue.title
+    const aTag = document.createElement('a')
+    aTag.setAttribute('href', issue.url)
+    aTag.textContent = `#${issue.iid}`
+    aTag.classList.add('issue-link')
+    title.appendChild(aTag)
+    const state = issueElement.firstElementChild.children[0].children[3]
+    state.textContent = issue.state
+    if (issue.state === 'closed') {
+      state.previousElementSibling.checked = true
+    } else {
+      state.previousElementSibling.checked = false
+    }
 
     issuesList.appendChild(issueElement)
-  }
-  else {
+  } else {
     updateIssue(issue)
   }
 }
@@ -42,8 +76,17 @@ const updateIssue = (issue) => {
 
   const title = issueElement.firstElementChild.children[0]
   const description = issueElement.firstElementChild.children[1]
-  const state = issueElement.firstElementChild.children[2]
-  title.textContent = issue.title
+  const state = issueElement.firstElementChild.children[3]
+  const link = title.firstElementChild
+  link.textContent = `#${issue.iid}`
+  link.href = issue.url
+  title.textContent = issue.title + ' '
+  title.appendChild(link)
   description.textContent = issue.description
   state.textContent = issue.state
+  if (issue.state === 'closed') {
+    state.previousElementSibling.checked = true
+  } else {
+    state.previousElementSibling.checked = false
+  }
 }

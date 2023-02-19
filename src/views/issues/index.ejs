@@ -2,12 +2,13 @@
 <h2><%- viewData.issues[0].title %></h2>
 <div id="issues-list">
   <% viewData.issues.forEach((issue) => { %>
-  <div data-id="<%= issue.id %>" class="card issue-card" style="width: 18rem;">
+  <div data-id="<%= issue.id %>" data-iid="<%= issue.iid %>" class="card issue-card" style="width: 18rem;">
     <div class="card-body">
-      <h5 class="card-title"><%- issue.title %></h5>
+      <h5 class="card-title"><%- issue.title %> <a class="issue-id" href="<%- issue.url %>">#<%- issue.iid %></a></h5>
       <p class="card-text"><%- issue.description %></p>
-      <p class="card-text"><%- issue.state %></p>
-      <a href="#" class="btn btn-primary">Go somewhere</a>
+      <input <%- issue.state === 'closed' ? 'checked=true' : "" %> type="checkbox" class="form-check-input"
+        class="state-checkbox" id="state-checkbox-<%- issue.id %>">
+      <label for="state-checkbox-<%- issue.id %>"><%- issue.state %></label>
     </div>
   </div>
   <% }) %>
@@ -16,10 +17,10 @@
 <template id="issue-template">
   <div class="card issue-card" style="width: 18rem;">
     <div class="card-body">
-      <h5 class="card-title issue-title"></h5>
+      <h5 class="card-title issue-title"><a class="issue-id" href=""></a></h5>
       <p class="card-text issue-description"></p>
-      <p class="card-text issue-state"></p>
-      <a href="#" class="btn btn-primary">Go somewhere</a>
+      <input type="checkbox" class="form-check-input" class="state-checkbox" id="state-checkbox">
+      <label for="state-checkbox"></label>
     </div>
   </div>
 </template>

@@ -3,8 +3,11 @@ export class WebhooksController {
   indexPost (req, res, next) {
     try {
       console.log('Issue webhook received')
+      console.log(req.body);
       const newIssue = {
         id: req.body.object_attributes.id,
+        iid: req.body.object_attributes.iid,
+        url: req.body.object_attributes.url,
         title: req.body.object_attributes.title,
         description: req.body.object_attributes.description,
         state: req.body.object_attributes.state,
