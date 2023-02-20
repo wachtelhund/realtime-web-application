@@ -5,6 +5,7 @@ import logger from 'morgan'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 import { router } from './routes/router.js'
+import { IssuesController } from './controllers/issues-controller.js'
 
 import { createServer } from 'node:http'
 import { Server } from 'socket.io'
@@ -15,19 +16,21 @@ try {
   const httpServer = createServer(app)
   const io = new Server(httpServer)
 
-  app.use(logger('dev'))
-  if (process.env.NODE_ENV === 'development') {
-    io.on('connection', (socket) => {
-      console.log('a user connected')
-
-      socket.on('disconnect', () => {
-        console.log('user disconnected')
-      })
-    })
-  }
-
   const dirFullName = dirname(fileURLToPath(import.meta.url))
   const baseURL = process.env.BASE_URL || '/'
+
+  app.use(logger('dev'))
+  io.on('connection', (socket) => {
+    console.log('a user connected')
+    socket.on('issue/toggle', (data) => {
+      console.log('issue/toggle', data)
+      new IssuesController().toggle(data)
+    })
+
+    socket.on('disconnect', () => {
+      console.log('user disconnected')
+    })
+  })
 
   app.set('view engine', 'ejs')
   app.set('views', join(dirFullName, 'views'))

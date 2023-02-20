@@ -6,8 +6,12 @@
       <img class="user-avatar" src="<%= issue.avatar %>" alt="user avatar">
       <h5 class="card-title"><%- issue.title %> <a class="issue-id" href="<%- issue.url %>">#<%- issue.iid %></a></h5>
       <p class="card-text"><%- issue.description %></p>
-      <input <%- issue.state === 'closed' ? 'checked=true' : "" %> type="checkbox" class="form-check-input"
-        class="state-checkbox" id="state-checkbox-<%- issue.id %>">
+      <% if (issue.state === 'closed') { %>
+      <input type="checkbox" class="form-check-input" class="state-checkbox" id="state-checkbox-<%- issue.id %>"
+        checked>
+      <% } else { %>
+      <input type="checkbox" class="form-check-input" class="state-checkbox" id="state-checkbox-<%- issue.id %>">
+      <% } %>
       <label for="state-checkbox-<%- issue.id %>"><%- issue.state %></label>
     </div>
   </div>

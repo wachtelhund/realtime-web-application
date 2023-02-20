@@ -17,7 +17,6 @@ export class IssuesController {
       res.redirect('/home')
     }
     const issues = await data.json()
-    console.log(issues);
     const viewData = {}
     viewData.issues = issues.map((issue) => {
       return {
@@ -32,18 +31,17 @@ export class IssuesController {
         updatedAt: issue.updated_at
       }
     })
-    console.log(viewData.issues)
     res.render('issues/index', { viewData })
   }
 
-  async toggle (req, res, next) {
+  async toggle (data) {
     let newState = ''
-    if (req.body.state === 'closed') {
+    if (data.state === 'closed') {
       newState = 'close'
     } else {
       newState = 'reopen'
     }
-    const response = await fetch(`${this.#CONNECTION_STRING}issues/${req.body.iid}?private_token=${process.env.GITLAB_TOKEN}`, {
+    const response = await fetch(`${this.#CONNECTION_STRING}issues/${data.iid}?private_token=${process.env.GITLAB_TOKEN}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -52,8 +50,7 @@ export class IssuesController {
     })
 
     if (!response.ok) {
-      const data = await response.json()
-      console.log(data);
+      // res.send({ error: 'Could not update issue.' })
     }
   }
 }

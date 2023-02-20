@@ -1,17 +1,12 @@
 import '../socket.io/socket.io.js'
 
 const issueTemplate = document.querySelector('#issue-template')
-addEventListener('DOMContentLoaded', () => {
-  addListeners()
-})
+const socket = window.io()
 
 if (issueTemplate) {
-  const observer = new MutationObserver((mutations) => {
-    console.log(mutations);
+  addEventListener('DOMContentLoaded', () => {
     addListeners()
   })
-  observer.observe(document.querySelector('#issues-list'), { childList: true })
-  const socket = window.io()
   socket.on('issue/create', (issue) => createIssue(issue))
 }
 
@@ -39,6 +34,8 @@ const createIssue = (issue) => {
     title.appendChild(aTag)
     const state = issueElement.firstElementChild.children[0].children[3]
     state.nextElementSibling.textContent = issue.state
+    state.nextElementSibling.setAttribute('for', `state-checkbox-${issue.id}`)
+    state.setAttribute('id', `state-checkbox-${issue.id}`)
     if (issue.state === 'closed') {
       state.previousElementSibling.checked = true
     } else {
@@ -83,20 +80,6 @@ function addListeners() {
   issuesList.addEventListener('change', (event) => {
     toggleState(event)
   })
-  //const issues = document.querySelectorAll('.issue-card')
-  //issues.forEach((issue) => {
-    //issue.removeEventListener('change', toggleState)
-    //console.log('removed listener');
-  //})
-  //issues.forEach((issue) => {
-    ////TODO: FIX ISSUES WITH TOGGLE STATE, DISABLE WHILE FETCHING
-    //issue.addEventListener('change', async (event) => {
-      //event.target.setAttribute('disabled', true)
-      //event.target.setAttribute('disabled', false)
-      //console.log('TARGET', event.target);
-      //await toggleState(event)
-    //})
-  //})
 }
 
 async function toggleState (event) {
@@ -105,16 +88,9 @@ async function toggleState (event) {
   } else {
     event.target.nextElementSibling.textContent = 'opened'
   }
-  console.log(event.target.parentElement.parentElement);
   const body = {
     iid: event.target.parentElement.parentElement.getAttribute('data-iid'),
     state: event.target.nextElementSibling.textContent
   }
-  await fetch('./issues/toggle', {
-    method: 'POST',
-    body: JSON.stringify(body),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
+  socket.emit('issue/toggle', body)
 }
