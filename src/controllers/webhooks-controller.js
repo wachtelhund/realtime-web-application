@@ -5,6 +5,7 @@ export class WebhooksController {
       console.log('Issue webhook received')
       console.log(req.body);
       const newIssue = {
+        avatar: req.body.user.avatar_url,
         id: req.body.object_attributes.id,
         iid: req.body.object_attributes.iid,
         url: req.body.object_attributes.url,

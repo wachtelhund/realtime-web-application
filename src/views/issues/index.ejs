@@ -3,6 +3,7 @@
   <% viewData.issues.forEach((issue) => { %>
   <div data-id="<%= issue.id %>" data-iid="<%= issue.iid %>" class="card issue-card" style="width: 18rem;">
     <div class="card-body">
+      <img class="user-avatar" src="<%= issue.avatar %>" alt="user avatar">
       <h5 class="card-title"><%- issue.title %> <a class="issue-id" href="<%- issue.url %>">#<%- issue.iid %></a></h5>
       <p class="card-text"><%- issue.description %></p>
       <input <%- issue.state === 'closed' ? 'checked=true' : "" %> type="checkbox" class="form-check-input"
@@ -16,6 +17,7 @@
 <template id="issue-template">
   <div class="card issue-card" style="width: 18rem;">
     <div class="card-body">
+      <img class="user-avatar" src="" alt="user avatar">
       <h5 class="card-title issue-title"><a class="issue-id" href=""></a></h5>
       <p class="card-text issue-description"></p>
       <input type="checkbox" class="form-check-input" class="state-checkbox" id="state-checkbox">

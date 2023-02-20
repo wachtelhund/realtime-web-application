@@ -71,11 +71,11 @@ try {
   app.use(baseURL, router)
 
   app.use(async function (err, req, res, next) {
-    // if (req.originalURL.includes('/webhooks')) {
-    //   return res
-    //     .status(err.status || 500)
-    //     .end(err.message)
-    // }
+    //if (req.originalURL.includes('/webhooks')) {
+      //return res
+        //.status(err.status || 500)
+        //.end(err.message)
+    //}
 
     if (err.status === 404) {
       return res

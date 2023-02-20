@@ -1,7 +1,9 @@
 import '../socket.io/socket.io.js'
 
 const issueTemplate = document.querySelector('#issue-template')
-addListeners()
+addEventListener('DOMContentLoaded', () => {
+  addListeners()
+})
 
 if (issueTemplate) {
   const observer = new MutationObserver((mutations) => {
@@ -27,6 +29,7 @@ const createIssue = (issue) => {
     issueElement.querySelector('.issue-card').setAttribute('data-id', issue.id)
     issueElement.querySelector('.issue-card').setAttribute('data-iid', issue.iid)
     issueElement.querySelector('.card-text').textContent = issue.description
+    issueElement.querySelector('.user-avatar').setAttribute('src', issue.avatar)
     const title = issueElement.querySelector('.issue-title')
     title.textContent = issue.title
     const aTag = document.createElement('a')
@@ -35,7 +38,7 @@ const createIssue = (issue) => {
     aTag.classList.add('issue-link')
     title.appendChild(aTag)
     const state = issueElement.firstElementChild.children[0].children[3]
-    state.textContent = issue.state
+    state.nextElementSibling.textContent = issue.state
     if (issue.state === 'closed') {
       state.previousElementSibling.checked = true
     } else {
@@ -58,9 +61,9 @@ const updateIssue = (issue) => {
     }
   })
 
-  const title = issueElement.firstElementChild.children[0]
-  const description = issueElement.firstElementChild.children[1]
-  const state = issueElement.firstElementChild.children[3]
+  const title = issueElement.firstElementChild.children[1]
+  const description = issueElement.firstElementChild.children[2]
+  const state = issueElement.firstElementChild.children[4]
   const link = title.firstElementChild
   link.textContent = `#${issue.iid}`
   link.href = issue.url
@@ -76,14 +79,24 @@ const updateIssue = (issue) => {
 }
 
 function addListeners() {
-  const issues = document.querySelectorAll('.issue-card')
-  issues.forEach((issue) => {
-    issue.removeEventListener('change', toggleState)
-    console.log('removed listener');
+  const issuesList = document.querySelector('#issues-list')
+  issuesList.addEventListener('change', (event) => {
+    toggleState(event)
   })
-  issues.forEach((issue) => {
-    issue.addEventListener('change', toggleState)
-  })
+  //const issues = document.querySelectorAll('.issue-card')
+  //issues.forEach((issue) => {
+    //issue.removeEventListener('change', toggleState)
+    //console.log('removed listener');
+  //})
+  //issues.forEach((issue) => {
+    ////TODO: FIX ISSUES WITH TOGGLE STATE, DISABLE WHILE FETCHING
+    //issue.addEventListener('change', async (event) => {
+      //event.target.setAttribute('disabled', true)
+      //event.target.setAttribute('disabled', false)
+      //console.log('TARGET', event.target);
+      //await toggleState(event)
+    //})
+  //})
 }
 
 async function toggleState (event) {

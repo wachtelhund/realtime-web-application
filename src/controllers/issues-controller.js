@@ -17,9 +17,11 @@ export class IssuesController {
       res.redirect('/home')
     }
     const issues = await data.json()
+    console.log(issues);
     const viewData = {}
     viewData.issues = issues.map((issue) => {
       return {
+        avatar: issue.author.avatar_url,
         id: issue.id,
         iid: issue.iid,
         url: issue.web_url,
@@ -35,7 +37,6 @@ export class IssuesController {
   }
 
   async toggle (req, res, next) {
-    console.log(req.body);
     let newState = ''
     if (req.body.state === 'closed') {
       newState = 'close'
