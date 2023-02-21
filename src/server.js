@@ -2,6 +2,7 @@ import express from 'express'
 import expressLayouts from 'express-ejs-layouts'
 import session from 'express-session'
 import logger from 'morgan'
+import helmet from 'helmet'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 import { router } from './routes/router.js'
@@ -23,7 +24,6 @@ try {
   io.on('connection', (socket) => {
     console.log('a user connected')
     socket.on('issue/toggle', (data) => {
-      console.log('issue/toggle', data)
       new IssuesController().toggle(data)
     })
 
@@ -52,6 +52,25 @@ try {
     }
   }
 
+  app.use(helmet({
+    crossOriginEmbedderPolicy: false
+  }))
+  app.use(helmet.contentSecurityPolicy({
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      'script-src': [
+        "'self'",
+        'cdn.jsdelivr.net'
+      ],
+      'img-src': [
+        "'self'",
+        'data:',
+        'secure.gravatar.com',
+        'https://www.media.hw-static.com/media/2016/10/borat-20th-century-fox-103116.jpg'
+      ]
+    }
+  }))
+
   if (process.env.NODE_ENV === 'production') {
     app.set('trust proxy', 1)
     sessionOptions.cookie.secure = true
@@ -71,14 +90,14 @@ try {
     next()
   })
 
-  app.use(baseURL, router)
+  app.use('/', router)
 
   app.use(async function (err, req, res, next) {
-    //if (req.originalURL.includes('/webhooks')) {
-      //return res
-        //.status(err.status || 500)
-        //.end(err.message)
-    //}
+    if (req.originalURL.includes('/webhooks')) {
+      return res
+        .status(err.status || 500)
+        .end(err.message)
+    }
 
     if (err.status === 404) {
       return res

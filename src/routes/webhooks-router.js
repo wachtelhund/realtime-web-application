@@ -10,7 +10,6 @@ const authenticate = ((req, res, next) => {
   if (req.get('x-gitlab-token') === process.env.WEBHOOK_SECRET) {
     next()
   } else {
-    console.log(req.headers);
     next(createError(401, 'Unauthorized'))
   }
 })
