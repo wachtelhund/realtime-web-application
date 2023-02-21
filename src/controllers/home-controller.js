@@ -1,5 +1,5 @@
 /**
- *  HomeController.
+ * HomeController.
  */
 export class HomeController {
   /**
