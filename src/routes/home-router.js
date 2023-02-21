@@ -1,3 +1,6 @@
+/**
+ * Home Router.
+ */
 import express from 'express'
 import { HomeController } from '../controllers/home-controller.js'
 

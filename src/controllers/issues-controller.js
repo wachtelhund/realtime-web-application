@@ -34,6 +34,11 @@ export class IssuesController {
     res.render('issues/index', { viewData })
   }
 
+  /**
+   * Toggle the state of an issue.
+   *
+   * @param {object} data - The issue data.
+   */
   async toggle (data) {
     let newState = ''
     if (data.state === 'closed') {
@@ -41,12 +46,17 @@ export class IssuesController {
     } else {
       newState = 'reopen'
     }
-    const response = await fetch(`${this.#CONNECTION_STRING}issues/${data.iid}?private_token=${process.env.GITLAB_TOKEN}`, {
+
+    const res = await fetch(`${this.#CONNECTION_STRING}issues/${data.iid}?private_token=${process.env.GITLAB_TOKEN}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ state_event: newState })
     })
+
+    if (!res.ok) {
+      throw new Error('Could not toggle issue state.')
+    }
   }
 }

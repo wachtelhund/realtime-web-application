@@ -15,6 +15,11 @@ if (issueTemplate) {
   socket.on('issue/create', (issue) => createIssue(issue))
 }
 
+/**
+ * Create an issue element.
+ *
+ * @param {object} issue - The issue object.
+ */
 const createIssue = (issue) => {
   const ids = []
   const nodeList = document.querySelector('#issues-list')
@@ -53,6 +58,11 @@ const createIssue = (issue) => {
   }
 }
 
+/**
+ * Updates an issue element.
+ *
+ * @param {object} issue - The issue object.
+ */
 const updateIssue = (issue) => {
   const issues = document.querySelectorAll('.issue-card')
 
@@ -80,13 +90,21 @@ const updateIssue = (issue) => {
   }
 }
 
-function addListeners() {
+/**
+ * Add event listeners.
+ */
+function addListeners () {
   const issuesList = document.querySelector('#issues-list')
   issuesList.addEventListener('change', (event) => {
     toggleState(event)
   })
 }
 
+/**
+ * Toggle the state of an issue by emitting an event.
+ *
+ * @param {object} event - The event object.
+ */
 async function toggleState (event) {
   if (event.target.checked) {
     event.target.nextElementSibling.textContent = 'closed'

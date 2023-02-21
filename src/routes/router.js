@@ -3,6 +3,9 @@ import createError from 'http-errors'
 import { router as homeRouter } from './home-router.js'
 import { router as issuesRouter } from './issues-router.js'
 import { router as webhooksRouter } from './webhooks-router.js'
+/**
+ * Main Router.
+ */
 
 export const router = express.Router()
 
