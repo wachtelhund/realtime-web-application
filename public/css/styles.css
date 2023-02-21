@@ -3,6 +3,7 @@ header {
 }
 
 .user-avatar {
+  opacity: 0.7;
   position: absolute;
   top: -40px;
   right: -40px;

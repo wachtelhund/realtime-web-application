@@ -48,9 +48,5 @@ export class IssuesController {
       },
       body: JSON.stringify({ state_event: newState })
     })
-
-    if (!response.ok) {
-      // res.send({ error: 'Could not update issue.' })
-    }
   }
 }
