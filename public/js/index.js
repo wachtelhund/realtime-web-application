@@ -1,7 +1,12 @@
 import '../socket.io/socket.io.js'
 
+const base = document.querySelector('base')
+const path = base
+  ? (new URL('socket.io', base.href)).pathname
+  : '/socket.io'
+const socket = window.io.connect('/', { path })
+
 const issueTemplate = document.querySelector('#issue-template')
-const socket = window.io({ path: `${process.env.baseURL}socket.io` })
 
 if (issueTemplate) {
   addEventListener('DOMContentLoaded', () => {
